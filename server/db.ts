@@ -1,11 +1,11 @@
 import admin from "firebase-admin";
 // import * as serviceAccount from "../key.json"; //Acordate que Axel es Boiviano
-
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 // console.log(admin);
 // console.log(serviceAccount);
 
 admin.initializeApp({
-  credential: admin.credential.cert(process.env.SERVICE_ACCOUNT as any),
+  credential: admin.credential.cert(serviceAccount as any),
   databaseURL: process.env.DB_URL,
 });
 

@@ -1,0 +1,26 @@
+{
+  "name": "desafio-final-6-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "@types/node": "^18.15.11",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.6.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "scripts": {
+    "build:api": "tsc",
+    "dev:api": "nodemon --watch './server/index.ts' --exec ts-node ./server/index.ts ",
+    "start": "node ./server/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -109,14 +109,14 @@ app.post("/createGameRoom", (req, res) => {
                 rtdbRoomId: roomLongId,
               })
               .then(() => {
-                res.status(200).json({
+                res.json({
                   shortId: roomId.toString(),
                   longRoomId: roomLongId.toString(),
                 });
               });
           });
       } else {
-        res.status(400).json({ MESSAGE: "Quien sos capo?" });
+        res.json({ MESSAGE: "Quien sos capo?" });
       }
     });
 });

@@ -13,7 +13,7 @@ const roomCollection = baseDeDatos.collection("rooms");
 
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "https://desafio-final-6.onrender.com" }));
 
 app.listen(port, () => {
   console.log("listening on port " + port + "AXELOIDE");
@@ -108,12 +108,10 @@ app.post("/createGameRoom", (req, res) => {
                 rtdbRoomId: roomLongId,
               })
               .then(() => {
-                res
-                  .status(200)
-                  .json({
-                    shortId: roomId.toString(),
-                    longRoomId: roomLongId.toString(),
-                  });
+                res.status(200).json({
+                  shortId: roomId.toString(),
+                  longRoomId: roomLongId.toString(),
+                });
               });
           });
       } else {

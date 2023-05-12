@@ -77,7 +77,6 @@ app.post("/createGameRoom", (req, res) => {
     .doc(userId.toString())
     .get()
     .then((doc) => {
-      console.log("Llega hasta el doc que seri esto:", doc);
       if (doc.exists) {
         const roomRef = rtdb.ref("/rooms/" + uuidv4());
         roomRef

@@ -71,7 +71,7 @@ app.post("/auth", (req, res) => {
 });
 
 app.post("/createGameRoom", (req, res) => {
-  const { userId } = req.body;
+  const { userId, userName } = req.body;
   console.log("llega esto al back:", userId);
   userCollection
     .doc(userId.toString())
@@ -85,7 +85,7 @@ app.post("/createGameRoom", (req, res) => {
               currentGame: {
                 [userId]: {
                   choice: "",
-                  name: "",
+                  name: [userName],
                   online: false,
                   start: false,
                   score: 0,

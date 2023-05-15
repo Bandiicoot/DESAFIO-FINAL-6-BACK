@@ -13,10 +13,23 @@ const roomCollection = baseDeDatos.collection("rooms");
 
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(cors({ origin: "https://desafio-final-6.onrender.com" }));
+app.use(cors());
 
 app.listen(port, () => {
   console.log("listening on port " + port + "AXELOIDE");
+});
+
+// Add Access Control Allow Origin headers
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://desafio-final-6.onrender.com"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
 
 app.post("/signup", (req, res) => {

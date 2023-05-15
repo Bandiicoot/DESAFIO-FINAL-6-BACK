@@ -72,7 +72,7 @@ app.post("/auth", (req, res) => {
 
 app.post("/createGameRoom", (req, res) => {
   const { userId, userName } = req.body;
-  console.log("llega esto al back:", userId);
+  console.log("llega esto al back:", userId, "Este es el userNme:", userName);
   userCollection
     .doc(userId.toString())
     .get()

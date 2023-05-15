@@ -72,20 +72,20 @@ app.post("/auth", (req, res) => {
 
 app.post("/createGameRoom", (req, res) => {
   const { userId, userName } = req.body;
+  const roomRef = rtdb.ref("/rooms/" + uuidv4());
   console.log("llega esto al back:", userId, "Este es el userNme:", userName);
   userCollection
     .doc(userId.toString())
     .get()
     .then((doc) => {
       if (doc.exists) {
-        const roomRef = rtdb.ref("/rooms/" + uuidv4());
         roomRef
           .set({
             rooms: {
               currentGame: {
                 [userId]: {
                   choice: "",
-                  name: [userName],
+                  name: userName,
                   online: false,
                   start: false,
                   score: 0,
@@ -115,8 +115,6 @@ app.post("/createGameRoom", (req, res) => {
                 });
               });
           });
-      } else {
-        res.json({ MESSAGE: "Quien sos capo?" });
       }
     });
 });

@@ -73,6 +73,7 @@ app.post("/auth", (req, res) => {
 app.post("/createGameRoom", (req, res) => {
   const { userId, userName } = req.body;
   const roomRef = rtdb.ref("/rooms/" + uuidv4());
+  console.log("Este es el roomRef", roomRef);
   console.log("llega esto al back:", userId, "Este es el userNme:", userName);
   userCollection
     .doc(userId.toString())

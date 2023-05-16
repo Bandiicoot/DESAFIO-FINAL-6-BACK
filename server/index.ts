@@ -14,7 +14,7 @@ const roomCollection = baseDeDatos.collection("rooms");
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://desafio-final-6.onrender.com"
+    "https://desafio-final-6.onrender.com/"
   );
   res.header(
     "Access-Control-Allow-Headers",

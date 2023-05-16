@@ -11,15 +11,6 @@ const port = process.env.PORT || 3000;
 const userCollection = baseDeDatos.collection("users");
 const roomCollection = baseDeDatos.collection("rooms");
 
-app.use(bodyParser.json());
-app.use(express.json());
-app.use(cors());
-
-app.listen(port, () => {
-  console.log("listening on port " + port + "AXELOIDE");
-});
-
-// Add Access Control Allow Origin headers
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
@@ -30,6 +21,14 @@ app.use((req, res, next) => {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
+});
+app.use(bodyParser.json());
+app.use(express.json());
+app.use(cors());
+
+// Add Access Control Allow Origin headers
+app.listen(port, () => {
+  console.log("listening on port " + port + "AXELOIDE");
 });
 
 app.post("/signup", (req, res) => {
@@ -86,7 +85,6 @@ app.post("/auth", (req, res) => {
 app.post("/createGameRoom", (req, res) => {
   const { userId, userName } = req.body;
   const roomRef = rtdb.ref("/rooms/" + uuidv4());
-  console.log("Este es el roomRef", roomRef);
   console.log("llega esto al back:", userId, "Este es el userNme:", userName);
   userCollection
     .doc(userId.toString())

@@ -2,12 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rtdb = exports.baseDeDatos = void 0;
 const firebase_admin_1 = require("firebase-admin");
-const serviceAccount = require("../key.json"); //Acordate que Axel es Boiviano
+// import { initializeApp } from "firebase/app";
+// import * as serviceAccount from "../key.json"; //Acordate que Axel es Boiviano
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 // console.log(admin);
 // console.log(serviceAccount);
 firebase_admin_1.default.initializeApp({
     credential: firebase_admin_1.default.credential.cert(serviceAccount),
-    databaseURL: "https://m6-cap3-default-rtdb.firebaseio.com",
+    databaseURL: process.env.DB_URL,
 });
 const baseDeDatos = firebase_admin_1.default.firestore();
 exports.baseDeDatos = baseDeDatos;

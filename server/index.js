@@ -8,12 +8,18 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 //import { monitorEventLoopDelay } from "perf_hooks";
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.DB_URL || 3000;
 const userCollection = db_1.baseDeDatos.collection("users");
 const roomCollection = db_1.baseDeDatos.collection("rooms");
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "https://desafio-final-6.onrender.com/");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
+// Add Access Control Allow Origin headers
 app.listen(port, () => {
     console.log("listening on port " + port + "AXELOIDE");
 });
@@ -63,20 +69,22 @@ app.post("/auth", (req, res) => {
     });
 });
 app.post("/createGameRoom", (req, res) => {
-    const { userId } = req.body;
+    const { userId, userName } = req.body;
+    //a ver si anda esto
+    const roomRef = db_1.rtdb.ref("/rooms/" + (0, uuid_1.v4)());
+    console.log("llega esto al back:", userId, "Este es el userName:", userName);
     userCollection
         .doc(userId.toString())
         .get()
         .then((doc) => {
         if (doc.exists) {
-            const roomRef = db_1.rtdb.ref("/rooms/" + (0, uuid_1.v4)());
             roomRef
                 .set({
                 rooms: {
                     currentGame: {
                         [userId]: {
                             choice: "",
-                            name: "",
+                            name: userName,
                             online: false,
                             start: false,
                             score: 0,
@@ -100,17 +108,12 @@ app.post("/createGameRoom", (req, res) => {
                     rtdbRoomId: roomLongId,
                 })
                     .then(() => {
-                    res
-                        .status(200)
-                        .json({
+                    res.json({
                         shortId: roomId.toString(),
                         longRoomId: roomLongId.toString(),
                     });
                 });
             });
-        }
-        else {
-            res.status(400).json({ MESSAGE: "Quien sos capo?" });
         }
     });
 });

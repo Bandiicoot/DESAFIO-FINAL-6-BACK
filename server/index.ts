@@ -7,7 +7,7 @@ import * as cors from "cors";
 //import { monitorEventLoopDelay } from "perf_hooks";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const userCollection = baseDeDatos.collection("users");
 const roomCollection = baseDeDatos.collection("rooms");
 
@@ -89,6 +89,7 @@ app.post("/createGameRoom", (req, res) => {
     .get()
     .then((doc) => {
       if (doc.exists) {
+        console.log("Antes de roomref");
         roomRef
           .set({
             rooms: {
@@ -111,6 +112,7 @@ app.post("/createGameRoom", (req, res) => {
             },
           })
           .then(() => {
+            console.log("Arranca el then antes del roomlongid");
             const roomLongId = roomRef.key;
             const roomId = 1000 + Math.floor(Math.random() * 999);
             roomCollection

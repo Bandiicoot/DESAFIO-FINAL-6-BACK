@@ -7,7 +7,7 @@ import * as cors from "cors";
 //import { monitorEventLoopDelay } from "perf_hooks";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.DB_URL || 3000;
 const userCollection = baseDeDatos.collection("users");
 const roomCollection = baseDeDatos.collection("rooms");
 
@@ -85,7 +85,7 @@ app.post("/auth", (req, res) => {
 app.post("/createGameRoom", (req, res) => {
   const { userId, userName } = req.body;
   //a ver si anda esto
-  const roomRef = rtdb.ref("rooms/" + uuidv4());
+  const roomRef = rtdb.ref("/rooms/" + uuidv4());
   console.log("llega esto al back:", userId, "Este es el userName:", userName);
   userCollection
     .doc(userId.toString())

@@ -27,9 +27,6 @@ app.use(express.json());
 app.use(cors());
 
 // Add Access Control Allow Origin headers
-app.listen(port, () => {
-  console.log("listening on port " + port + "AXELOIDE");
-});
 
 app.post("/signup", (req, res) => {
   const { email, name, password } = req.body;
@@ -184,4 +181,8 @@ app.patch("/gameRoomsChanges/", (req, res) => {
     roomRef.update(currentGameUpdated);
     res.json(currentGameUpdated);
   });
+});
+
+app.listen(port, () => {
+  console.log("listening on port " + port + "AXELOIDE");
 });

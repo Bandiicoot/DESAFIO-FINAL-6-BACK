@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 //import { monitorEventLoopDelay } from "perf_hooks";
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORTT || 3000;
 const userCollection = db_1.baseDeDatos.collection("users");
 const roomCollection = db_1.baseDeDatos.collection("rooms");
 app.use((req, res, next) => {

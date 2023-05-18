@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 //import { monitorEventLoopDelay } from "perf_hooks";
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 const userCollection = db_1.baseDeDatos.collection("users");
 const roomCollection = db_1.baseDeDatos.collection("rooms");
 app.use((req, res, next) => {
@@ -20,6 +20,9 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 // Add Access Control Allow Origin headers
+app.listen(port, () => {
+    console.log("listening on port " + port + "AXELOIDE");
+});
 app.post("/signup", (req, res) => {
     const { email, name, password } = req.body;
     console.log(email, name, password +
@@ -75,7 +78,6 @@ app.post("/createGameRoom", (req, res) => {
         .get()
         .then((doc) => {
         if (doc.exists) {
-            console.log("Antes de roomref");
             roomRef
                 .set({
                 rooms: {
@@ -98,7 +100,6 @@ app.post("/createGameRoom", (req, res) => {
                 },
             })
                 .then(() => {
-                console.log("Arranca el then antes del roomlongid");
                 const roomLongId = roomRef.key;
                 const roomId = 1000 + Math.floor(Math.random() * 999);
                 roomCollection
@@ -164,7 +165,4 @@ app.patch("/gameRoomsChanges/", (req, res) => {
         roomRef.update(currentGameUpdated);
         res.json(currentGameUpdated);
     });
-});
-app.listen(port, () => {
-    console.log("listening on port " + port + "AXELOIDE");
 });

@@ -91,27 +91,26 @@ app.post("/createGameRoom", (req, res) => {
       if (doc.exists) {
         console.log("Antes de roomref");
         roomRef
-          .set({ cortito: "Lago Ness" })
-          // .set({
-          //   rooms: {
-          //     currentGame: {
-          //       [userId]: {
-          //         choice: "",
-          //         name: userName,
-          //         online: false,
-          //         start: false,
-          //         score: 0,
-          //       },
-          //       secondPlayer: {
-          //         choice: "",
-          //         name: "",
-          //         online: false,
-          //         start: false,
-          //         score: 0,
-          //       },
-          //     },
-          //   },
-          // })
+          .set({
+            rooms: {
+              currentGame: {
+                [userId]: {
+                  choice: "",
+                  name: userName,
+                  online: false,
+                  start: false,
+                  score: 0,
+                },
+                secondPlayer: {
+                  choice: "",
+                  name: "",
+                  online: false,
+                  start: false,
+                  score: 0,
+                },
+              },
+            },
+          })
           .then(() => {
             console.log("Arranca el then antes del roomlongid");
             const roomLongId = roomRef.key;

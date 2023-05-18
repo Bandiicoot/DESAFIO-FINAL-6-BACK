@@ -9,6 +9,7 @@ const cors = require("cors");
 //import { monitorEventLoopDelay } from "perf_hooks";
 const app = express();
 const port = process.env.PORTA || 3000;
+console.log("este es el port", port);
 const userCollection = db_1.baseDeDatos.collection("users");
 const roomCollection = db_1.baseDeDatos.collection("rooms");
 app.use((req, res, next) => {

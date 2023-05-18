@@ -1,7 +1,8 @@
 import admin from "firebase-admin";
 // import { initializeApp } from "firebase/app";
 // import * as serviceAccount from "../key.json"; //Acordate que Axel es Boiviano
-const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
+const account = JSON.parse(process.env.SERVICE_ACCOUNT);
+const serviceAccount = account;
 // console.log(admin);
 // console.log(serviceAccount);
 

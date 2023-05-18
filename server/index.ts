@@ -8,6 +8,7 @@ import * as cors from "cors";
 
 const app = express();
 const port = process.env.PORTA || 3000;
+console.log("este es el port", port);
 const userCollection = baseDeDatos.collection("users");
 const roomCollection = baseDeDatos.collection("rooms");
 

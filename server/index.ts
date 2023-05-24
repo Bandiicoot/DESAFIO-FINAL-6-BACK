@@ -159,6 +159,78 @@ app.get(`/getRtdbRoomId/:roomId`, (req, res) => {
   });
 });
 
+app.patch("/gameRoom/:roomId/:userId", (req, res) => {
+  const { roomId, userId } = req.params;
+
+  const userStatus: boolean = req.body.userStatus;
+
+  const userName: string = req.body.userName;
+
+  const roomRef = rtdb.ref(`/rooms/` + roomId);
+  roomRef.get().then((currentGameSnap) => {
+    var currentGameSnapData = currentGameSnap.val();
+
+    currentGameSnapData.currentGame[userId].online = userStatus;
+    currentGameSnapData.currentGame[userId].name = userName;
+
+    var currentGameUpdated = currentGameSnapData;
+    console.log("Variable check: ", currentGameUpdated);
+
+    roomRef.update(currentGameUpdated);
+    res.json({ message: "Jugador online!" });
+  });
+});
+
+// app.patch("/joinRoom/:roomId/:userId", (req, res) => {
+//   const { roomId, userId } = req.params;
+//   const userStatus: boolean = req.body.userStatus;
+//   const userName: string = req.body.userName;
+
+//   const roomRef = rtdb.ref(`/rooms/` + roomId);
+//   roomRef.get().then((currentGameSnap) => {
+//     var currentGameSnapData = currentGameSnap.val();
+//     var message: string;
+
+//     if (currentGameSnapData.currentGame.secondPlayer) {
+//       Object.assign(currentGameSnapData.currentGame, {
+//         [userId]: {
+//           choice: "",
+//           name: userName,
+//           online: userStatus,
+//           start: false,
+//           score: 0,
+//         },
+//       });
+//       delete currentGameSnapData.currentGame.secondplayer
+//     }
+//   });
+// });
+
+app.patch("/gameRoom/:roomId/start/:userId", (req, res) => {
+  const { roomId, userId } = req.params;
+  const roomRef = rtdb.ref(`/rooms/` + roomId);
+  roomRef.get().then((currentGameSnap) => {
+    var currentGameSnapData = currentGameSnap.val();
+    currentGameSnapData.currentGame[userId].online = true;
+    currentGameSnapData.currentGame[userId].start = true;
+
+    roomRef.update(currentGameSnapData);
+  });
+});
+
+app.patch("/gameRoom/:roomId/restart/:userId", (req, res) => {
+  const { roomId, userId } = req.params;
+  const roomRef = rtdb.ref(`/rooms/` + roomId);
+  roomRef.get().then((currentGameSnap) => {
+    var cgData = currentGameSnap.val();
+
+    cgData.currentGame[userId].online = cgData = true;
+    cgData.currentGame[userId].start = cgData = false;
+    cgData.currentGame[userId].choice = cgData = "";
+    roomRef.update(cgData);
+  });
+});
+
 app.patch("/gameRoomsChanges/", (req, res) => {
   const { roomId, userId, userName, userStatus } = req.body;
   const roomRef = rtdb.ref(`/rooms/${roomId}`);

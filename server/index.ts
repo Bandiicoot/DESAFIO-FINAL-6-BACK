@@ -135,7 +135,7 @@ app.post("/createGameRoom", (req, res) => {
 
 app.post("/actualScore", (req, res) => {
   const { roomId, userId } = req.body;
-  const roomRef = rtdb.ref(`/rooms/${roomId}`);
+  const roomRef = rtdb.ref(`rooms/${roomId}`);
 
   roomRef.get().then((roomSnap) => {
     var roomSnapData = roomSnap.val();
@@ -166,7 +166,7 @@ app.patch("/gameRoom/:longRoomId/:userId", (req, res) => {
 
   const userName: string = req.body.userName;
 
-  const roomRef = rtdb.ref(`/rooms/` + longRoomId);
+  const roomRef = rtdb.ref(`rooms/` + longRoomId);
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();
 
@@ -208,7 +208,7 @@ app.patch("/gameRoom/:longRoomId/:userId", (req, res) => {
 
 app.patch("/gameRoom/:roomId/start/:userId", (req, res) => {
   const { roomId, userId } = req.params;
-  const roomRef = rtdb.ref(`/rooms/${roomId}`);
+  const roomRef = rtdb.ref(`rooms/${roomId}`);
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();
     currentGameSnapData.currentGame[userId].online = true;
@@ -233,7 +233,7 @@ app.patch("/gameRoom/:roomId/restart/:userId", (req, res) => {
 
 app.patch("/gameRoomsChanges/", (req, res) => {
   const { roomId, userId, userName, userStatus } = req.body;
-  const roomRef = rtdb.ref(`/rooms/${roomId}`);
+  const roomRef = rtdb.ref(`rooms/${roomId}`);
 
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();

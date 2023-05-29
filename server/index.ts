@@ -159,14 +159,14 @@ app.get(`/getRtdbRoomId/:roomId`, (req, res) => {
   });
 });
 
-app.patch("/gameRoom/:roomId/:userId", (req, res) => {
-  const { roomId, userId } = req.params;
+app.patch("/gameRoom/:longRoomId/:userId", (req, res) => {
+  const { longRoomId, userId } = req.params;
 
   const userStatus: boolean = req.body.userStatus;
 
   const userName: string = req.body.userName;
 
-  const roomRef = rtdb.ref(`/rooms/${roomId}`);
+  const roomRef = rtdb.ref(`/rooms/` + longRoomId);
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();
 

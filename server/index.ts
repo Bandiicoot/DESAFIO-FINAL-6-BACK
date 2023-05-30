@@ -148,11 +148,11 @@ app.post("/actualScore", (req, res) => {
 
 app.get(`/getRtdbRoomId/:roomId`, (req, res) => {
   const { roomId } = req.params;
+  console.log("Este es el roomId:", roomId);
   const roomRef = roomCollection.doc(roomId);
-  console.log("hasta aca llega", roomRef);
+
   roomRef.get().then((snap) => {
     if (snap.exists) {
-      console.log("hasta aca llega", roomRef);
       res.json(snap.data());
     } else {
       res.status(404).send({ message: "La sala no existe CUCHASTE" });

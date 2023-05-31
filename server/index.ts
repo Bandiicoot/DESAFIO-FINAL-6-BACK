@@ -153,7 +153,8 @@ app.get(`/getRtdbRoomId/:roomId`, (req, res) => {
 
   roomRef.get().then((snap) => {
     if (snap.exists) {
-      res.json(snap.data());
+      const snapData = snap.data();
+      res.json(snapData);
     } else {
       res.status(404).send({ message: "La sala no existe CUCHASTE" });
     }
@@ -238,6 +239,7 @@ app.patch("/gameRoomsChanges/", (req, res) => {
 
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();
+    var message: string;
     console.log(currentGameSnapData);
     // currentGameSnapData.userId.name = name;
     if (currentGameSnapData.rooms.currentGame.secondPlayer) {
@@ -251,11 +253,20 @@ app.patch("/gameRoomsChanges/", (req, res) => {
         },
       });
       delete currentGameSnapData.rooms.currentGame.secondPlayer;
+      message = "Te uniste a la sala";
     } else if (currentGameSnapData.rooms.currentGame[userId]) {
       currentGameSnapData.rooms.currentGame[userId].online = userStatus;
+      currentGameSnapData.rooms.currentGame[userId].choice = "";
+      currentGameSnapData.rooms.currentGame[userId].start = false;
+      message = "Te conectaste a la sala";
+    } else {
+      message = "Sala llena";
     }
-    var currentGameUpdated = currentGameSnapData;
-    roomRef.update(currentGameUpdated);
-    res.json(currentGameUpdated);
+    if (message === "Te uniste a la sala" || "Te conectaste a la sala") {
+      var currentGameUpdated = currentGameSnapData;
+      roomRef.update(currentGameUpdated);
+    }
+    // res.json(currentGameUpdated);
+    res.json({ message });
   });
 });

@@ -233,7 +233,7 @@ app.patch("/gameRoom/:roomId/restart/:userId", (req, res) => {
   });
 });
 
-app.patch("/gameRoomsChanges/", (req, res) => {
+app.patch("/gameRoomsChanges/:roomId/:userId", (req, res) => {
   const { roomId, userId, userName, userStatus } = req.body;
   const roomRef = rtdb.ref(`rooms/${roomId}`);
 

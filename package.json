@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build:api": "tsc",
-    "dev:api": "nodemon --watch './server/index.ts' --exec ts-node ./server/index.ts ",
+    "nitro:api": "nodemon --watch './server/index.ts' --exec ts-node ./server/index.ts ",
     "start": "node ./server/index.js"
   },
   "author": "",

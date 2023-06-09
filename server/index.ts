@@ -66,6 +66,7 @@ app.post("/signup", (req, res) => {
 
 app.post("/auth", (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
 
   userCollection
     .where("email", "==", email)
@@ -100,7 +101,7 @@ app.post("/createGameRoom", (req, res) => {
                 [userId]: {
                   choice: "",
                   name: userName,
-                  online: false,
+                  online: true,
                   start: false,
                   score: 0,
                 },
@@ -143,17 +144,36 @@ app.post("/actualScore", (req, res) => {
     roomSnapData.rooms.currentGame[userId].score++;
     roomRef.update(roomSnapData);
   });
-  res.json("PEACHES PEACHES PEACHES");
+  res.json("Victoria de peaches!");
+});
+
+app.post("/sendChoice", (req, res) => {
+  const { roomId, userId, choice } = req.body;
+  console.log("lo que se recibe:", roomId, userId, choice);
+  const roomRef = rtdb.ref(`rooms/${roomId}`);
+
+  roomRef.get().then((roomSnap) => {
+    var roomSnapData = roomSnap.val();
+
+    roomSnapData.rooms.currentGame[userId].choice = choice;
+    roomSnapData.rooms.currentGame[userId].start = false;
+    console.log("la roomSnapData:", roomSnapData);
+    roomRef.update(roomSnapData);
+  });
+  res.json("Jugada hecha por PEACHES");
 });
 
 app.get(`/getRtdbRoomId/:roomId`, (req, res) => {
   const { roomId } = req.params;
   console.log("Este es el roomId:", roomId);
+
   const roomRef = roomCollection.doc(roomId);
+  // No llega a obtener el roomRef
 
   roomRef.get().then((snap) => {
     if (snap.exists) {
       const snapData = snap.data();
+      console.log("Axel no es un sith", snapData);
       res.json(snapData);
     } else {
       res.status(404).send({ message: "La sala no existe CUCHASTE" });
@@ -183,38 +203,15 @@ app.patch("/gameRoom/:longRoomId/:userId", (req, res) => {
   });
 });
 
-// app.patch("/joinRoom/:roomId/:userId", (req, res) => {
-//   const { roomId, userId } = req.params;
-//   const userStatus: boolean = req.body.userStatus;
-//   const userName: string = req.body.userName;
-
-//   const roomRef = rtdb.ref(`/rooms/` + roomId);
-//   roomRef.get().then((currentGameSnap) => {
-//     var currentGameSnapData = currentGameSnap.val();
-//     var message: string;
-
-//     if (currentGameSnapData.currentGame.secondPlayer) {
-//       Object.assign(currentGameSnapData.currentGame, {
-//         [userId]: {
-//           choice: "",
-//           name: userName,
-//           online: userStatus,
-//           start: false,
-//           score: 0,
-//         },
-//       });
-//       delete currentGameSnapData.currentGame.secondplayer
-//     }
-//   });
-// });
-
-app.patch("/gameRoom/:roomId/start/:userId", (req, res) => {
+app.patch("/gameRooms/:roomId/start/:userId", (req, res) => {
   const { roomId, userId } = req.params;
+  console.log("roomiAIDI", roomId, "userAIDI:", userId);
   const roomRef = rtdb.ref(`rooms/${roomId}`);
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();
-    currentGameSnapData.currentGame[userId].online = true;
-    currentGameSnapData.currentGame[userId].start = true;
+    console.log("Este es el snapaData sith:", currentGameSnapData);
+    currentGameSnapData.rooms.currentGame[userId].online = true;
+    currentGameSnapData.rooms.currentGame[userId].start = true;
 
     roomRef.update(currentGameSnapData);
   });
@@ -234,8 +231,19 @@ app.patch("/gameRoom/:roomId/restart/:userId", (req, res) => {
 });
 
 app.patch("/gameRoomsChanges/:roomId/:userId", (req, res) => {
-  const { roomId, userId, userName, userStatus } = req.body;
+  const { userName, userStatus } = req.body;
+  const { roomId, userId } = req.params;
   const roomRef = rtdb.ref(`rooms/${roomId}`);
+  console.log(
+    "userId: " +
+      userId +
+      " userName: " +
+      userName +
+      "userStatus:" +
+      userStatus +
+      "roomRef: " +
+      roomRef
+  );
 
   roomRef.get().then((currentGameSnap) => {
     var currentGameSnapData = currentGameSnap.val();

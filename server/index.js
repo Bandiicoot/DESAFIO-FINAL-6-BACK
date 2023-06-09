@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 //import { monitorEventLoopDelay } from "perf_hooks";
 const app = express();
-const port = process.env.PORTA || 3000;
+const port = process.env.PORT || 3000;
 console.log("este es el port", port);
 const userCollection = db_1.baseDeDatos.collection("users");
 const roomCollection = db_1.baseDeDatos.collection("rooms");
@@ -53,6 +53,7 @@ app.post("/signup", (req, res) => {
 // AUTORIZACION
 app.post("/auth", (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password);
     userCollection
         .where("email", "==", email)
         .where("password", "==", password)
@@ -72,7 +73,7 @@ app.post("/auth", (req, res) => {
 app.post("/createGameRoom", (req, res) => {
     const { userId, userName } = req.body;
     //a ver si anda esto
-    const roomRef = db_1.rtdb.ref("/rooms/" + (0, uuid_1.v4)());
+    const roomRef = db_1.rtdb.ref("rooms/" + (0, uuid_1.v4)());
     console.log("llega esto al back:", userId, "Este es el userName:", userName);
     userCollection
         .doc(userId.toString())
@@ -86,7 +87,7 @@ app.post("/createGameRoom", (req, res) => {
                         [userId]: {
                             choice: "",
                             name: userName,
-                            online: false,
+                            online: true,
                             start: false,
                             score: 0,
                         },
@@ -120,31 +121,96 @@ app.post("/createGameRoom", (req, res) => {
 });
 app.post("/actualScore", (req, res) => {
     const { roomId, userId } = req.body;
-    const roomRef = db_1.rtdb.ref(`/rooms/${roomId}`);
+    const roomRef = db_1.rtdb.ref(`rooms/${roomId}`);
     roomRef.get().then((roomSnap) => {
         var roomSnapData = roomSnap.val();
         roomSnapData.rooms.currentGame[userId].score++;
         roomRef.update(roomSnapData);
     });
-    res.json("PEACHES PEACHES PEACHES");
+    res.json("Victoria de peaches!");
+});
+app.post("/sendChoice", (req, res) => {
+    const { roomId, userId, choice } = req.body;
+    console.log("lo que se recibe:", roomId, userId, choice);
+    const roomRef = db_1.rtdb.ref(`rooms/${roomId}`);
+    roomRef.get().then((roomSnap) => {
+        var roomSnapData = roomSnap.val();
+        roomSnapData.rooms.currentGame[userId].choice = choice;
+        roomSnapData.rooms.currentGame[userId].start = false;
+        console.log("la roomSnapData:", roomSnapData);
+        roomRef.update(roomSnapData);
+    });
+    res.json("Jugada hecha por PEACHES");
 });
 app.get(`/getRtdbRoomId/:roomId`, (req, res) => {
     const { roomId } = req.params;
+    console.log("Este es el roomId:", roomId);
     const roomRef = roomCollection.doc(roomId);
+    // No llega a obtener el roomRef
     roomRef.get().then((snap) => {
         if (snap.exists) {
-            res.json(snap.data());
+            const snapData = snap.data();
+            console.log("Axel no es un sith", snapData);
+            res.json(snapData);
         }
         else {
             res.status(404).send({ message: "La sala no existe CUCHASTE" });
         }
     });
 });
-app.patch("/gameRoomsChanges/", (req, res) => {
-    const { roomId, userId, userName, userStatus } = req.body;
-    const roomRef = db_1.rtdb.ref(`/rooms/${roomId}`);
+app.patch("/gameRoom/:longRoomId/:userId", (req, res) => {
+    const { longRoomId, userId } = req.params;
+    const userStatus = req.body.userStatus;
+    const userName = req.body.userName;
+    const roomRef = db_1.rtdb.ref(`rooms/` + longRoomId);
     roomRef.get().then((currentGameSnap) => {
         var currentGameSnapData = currentGameSnap.val();
+        currentGameSnapData.currentGame[userId].online = userStatus;
+        currentGameSnapData.currentGame[userId].name = userName;
+        var currentGameUpdated = currentGameSnapData;
+        console.log("Variable check: ", currentGameUpdated);
+        roomRef.update(currentGameUpdated);
+        res.json({ message: "Jugador online!" });
+    });
+});
+app.patch("/gameRooms/:roomId/start/:userId", (req, res) => {
+    const { roomId, userId } = req.params;
+    console.log("roomiAIDI", roomId, "userAIDI:", userId);
+    const roomRef = db_1.rtdb.ref(`rooms/${roomId}`);
+    roomRef.get().then((currentGameSnap) => {
+        var currentGameSnapData = currentGameSnap.val();
+        console.log("Este es el snapaData sith:", currentGameSnapData);
+        currentGameSnapData.rooms.currentGame[userId].online = true;
+        currentGameSnapData.rooms.currentGame[userId].start = true;
+        roomRef.update(currentGameSnapData);
+    });
+});
+app.patch("/gameRoom/:roomId/restart/:userId", (req, res) => {
+    const { roomId, userId } = req.params;
+    const roomRef = db_1.rtdb.ref(`/rooms/${roomId}`);
+    roomRef.get().then((currentGameSnap) => {
+        var cgData = currentGameSnap.val();
+        cgData.currentGame[userId].online = cgData = true;
+        cgData.currentGame[userId].start = cgData = false;
+        cgData.currentGame[userId].choice = cgData = "";
+        roomRef.update(cgData);
+    });
+});
+app.patch("/gameRoomsChanges/:roomId/:userId", (req, res) => {
+    const { userName, userStatus } = req.body;
+    const { roomId, userId } = req.params;
+    const roomRef = db_1.rtdb.ref(`rooms/${roomId}`);
+    console.log("userId: " +
+        userId +
+        " userName: " +
+        userName +
+        "userStatus:" +
+        userStatus +
+        "roomRef: " +
+        roomRef);
+    roomRef.get().then((currentGameSnap) => {
+        var currentGameSnapData = currentGameSnap.val();
+        var message;
         console.log(currentGameSnapData);
         // currentGameSnapData.userId.name = name;
         if (currentGameSnapData.rooms.currentGame.secondPlayer) {
@@ -158,12 +224,22 @@ app.patch("/gameRoomsChanges/", (req, res) => {
                 },
             });
             delete currentGameSnapData.rooms.currentGame.secondPlayer;
+            message = "Te uniste a la sala";
         }
         else if (currentGameSnapData.rooms.currentGame[userId]) {
             currentGameSnapData.rooms.currentGame[userId].online = userStatus;
+            currentGameSnapData.rooms.currentGame[userId].choice = "";
+            currentGameSnapData.rooms.currentGame[userId].start = false;
+            message = "Te conectaste a la sala";
         }
-        var currentGameUpdated = currentGameSnapData;
-        roomRef.update(currentGameUpdated);
-        res.json(currentGameUpdated);
+        else {
+            message = "Sala llena";
+        }
+        if (message === "Te uniste a la sala" || "Te conectaste a la sala") {
+            var currentGameUpdated = currentGameSnapData;
+            roomRef.update(currentGameUpdated);
+        }
+        // res.json(currentGameUpdated);
+        res.json({ message });
     });
 });
